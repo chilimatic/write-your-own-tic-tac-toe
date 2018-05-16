@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tic - Tac - Toe</title>
+    <style>
+        /* we use local styles to make it easier to modify it */
+
+        .board {
+            /* if you want to know more about flex display */
+            /* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+
+            /* if you want to play around http://www.flexboxdefense.com/ */
+
+            width: 300px; /* take a number that can be divided by 3 */
+            display: flex; /* special display options */
+            flex-direction: column;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+            height: 100px;  /** to make our field we got 3 row height 100px  -> 3 x 100 = 300 */
+        }
+
+        .field {
+            width: 100px;
+            height: 100%; /* this is so our field will take the height of the row */
+            border: 1px solid #333; /* this is our border of a field so you can the board size */
+        }
+
+    </style>
+
+</head>
+<body>
+    <h1>Playing board</h1>
+    <div class="board">
+        <div class="row">
+            <div class="field"></div>
+            <div class="field"></div>
+            <div class="field"></div>
+        </div>
+        <div class="row">
+            <div class="field"></div>
+            <div class="field"></div>
+            <div class="field"></div>
+        </div>
+        <div class="row">
+            <div class="field"></div>
+            <div class="field"></div>
+            <div class="field"></div>
+        </div>
+    </div>
+</body>
+</html>
