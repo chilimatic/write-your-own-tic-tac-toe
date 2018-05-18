@@ -214,7 +214,7 @@ So we can just say give us the field 0 in the row 0.
  * @param fieldNumber
  * @returns Element | null
  */
-function getfield(rowNumber, fieldNumber) {
+function getField(rowNumber, fieldNumber) {
     // we build our selector so we can say give us the the field with the fieldNumber within the row with the rowNumber
     var fieldId = 'div[data-row="' +rowNumber+ '"] > div[data-field="' +fieldNumber+ '"]';
     var element = document.querySelector(fieldId);
@@ -239,12 +239,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     for (var rowNumber in field) {
         for (var fieldNumber in field[rowNumber]) {
-            field = getfield(rowNumber, fieldNumber); // we replaced it here
+            field = getField(rowNumber, fieldNumber); // we replaced it here
 
             field.querySelector(fieldId).addEventListener('click', function(e) {
                 var fieldNumber = this.getAttribute('data-field');
                 var rowNumber = this.parentNode.getAttribute('data-row');
-                var field = getfield(rowNumber, fieldNumber); // and here
+                var field = getField(rowNumber, fieldNumber); // and here
                 field.innerHTML = 'X';
             });
         }
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function() {
  * @param fieldNumber
  * @returns Element | null
  */
-function getfield(rowNumber, fieldNumber) {
+function getField(rowNumber, fieldNumber) {
     // we build our selector so we can say give us the the field with the fieldNumber within the row with the rowNumber
     var fieldId = 'div[data-row="' +rowNumber+ '"] > div[data-field="' +fieldNumber+ '"]';
     var element = document.querySelector(fieldId);
@@ -278,7 +278,7 @@ And now we want to be able to mark our fields by just passing in which row and f
  * @param symbol
  */
 function markField(rowNumber, fieldNumber, symbol) {
-    var field = getfield(rowNumber, fieldNumber);
+    var field = getField(rowNumber, fieldNumber);
     field.innerHTML = symbol;
 }
 ```
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     for (var rowNumber in field) {
         for (var fieldNumber in field[rowNumber]) {
-            field = getfield(rowNumber, fieldNumber); // we replaced it here
+            field = getField(rowNumber, fieldNumber); // we replaced it here
 
             field.querySelector(fieldId).addEventListener('click', function(e) {
                 var fieldNumber = this.getAttribute('data-field');
@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
  * @param fieldNumber
  * @returns Element | null
  */
-function getfield(rowNumber, fieldNumber) {
+function getField(rowNumber, fieldNumber) {
     // we build our selector so we can say give us the the field with the fieldNumber within the row with the rowNumber
     var fieldId = 'div[data-row="' +rowNumber+ '"] > div[data-field="' +fieldNumber+ '"]';
     var element = document.querySelector(fieldId);
@@ -329,7 +329,7 @@ function getfield(rowNumber, fieldNumber) {
  * @param symbol
  */
 function markField(rowNumber, fieldNumber, symbol) {
-    var field = getfield(rowNumber, fieldNumber);
+    var field = getField(rowNumber, fieldNumber);
     field.innerHTML = symbol;
 }
 ```
@@ -343,7 +343,7 @@ now we finally want to connect our internal array with our visual representation
  */
 function markField(rowNumber, fieldNumber, symbol) {
     board[rowNumber][fieldNumber] = symbol;
-    var field = getfield(rowNumber, fieldNumber);
+    var field = getField(rowNumber, fieldNumber);
     field.innerHTML = symbol;
 }
 ```
@@ -360,7 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     for (var rowNumber in field) {
         for (var fieldNumber in field[rowNumber]) {
-            field = getfield(rowNumber, fieldNumber); // we replaced it here
+            field = getField(rowNumber, fieldNumber); // we replaced it here
 
             field.querySelector(fieldId).addEventListener('click', function(e) {
                 var fieldNumber = this.getAttribute('data-field');
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function() {
  * @param fieldNumber
  * @returns Element | null
  */
-function getfield(rowNumber, fieldNumber) {
+function getField(rowNumber, fieldNumber) {
     // we build our selector so we can say give us the the field with the fieldNumber within the row with the rowNumber
     var fieldId = 'div[data-row="' +rowNumber+ '"] > div[data-field="' +fieldNumber+ '"]';
     var element = document.querySelector(fieldId);
@@ -395,7 +395,7 @@ function getfield(rowNumber, fieldNumber) {
  */
 function markField(rowNumber, fieldNumber, symbol) {
     board[rowNumber][fieldNumber] = symbol;
-    var field = getfield(rowNumber, fieldNumber);
+    var field = getField(rowNumber, fieldNumber);
     field.innerHTML = symbol;
     
     console.log(board);

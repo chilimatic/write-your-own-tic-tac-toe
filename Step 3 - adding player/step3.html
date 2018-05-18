@@ -5,6 +5,9 @@
     <title>Tic - Tac - Toe</title>
     <style>
         /* we use local styles to make it easier to modify it */
+        * {
+            box-sizing: border-box;
+        }
 
         .board {
             /* if you want to know more about flex display */
@@ -27,6 +30,15 @@
             width: 100px;
             height: 100%; /* this is so our field will take the height of the row */
             border: 1px solid #333; /* this is our border of a field so you can the field size */
+            display: flex;
+       }
+
+        .player-symbol {
+            width: 100%;
+            align-self: center;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
         }
 
     </style>
@@ -38,16 +50,38 @@
                 [null, null, null], // row 3
             ];
 
-            // this has only to be done once
-            var field = null;
-            for (var rowNumber in board) {
-                for (var fieldNumber in board[rowNumber]) {
-                    field = getField(rowNumber, fieldNumber);
-                    field.addEventListener('click', function(e) {
-                        var fieldId = this.getAttribute('data-field');
-                        var rowId = this.parentNode.getAttribute('data-row');
-                        markField(rowId, fieldId, 'X');
-                    });
+            var currentTurn = 1;
+
+            var player1Symbol = '<span class="player-symbol">&#9732;</span>';
+            var player2Symbol = '<span class="player-symbol">&#9733;</span>';
+            var currentPlayer = 0;
+            var players = [player1Symbol, player2Symbol];
+
+            startGame();
+
+            function startGame() {
+                var field;
+                for (var rowNumber in board) {
+                    for (var fieldNumber in board[rowNumber]) {
+                        field = getField(rowNumber, fieldNumber);
+                        field.addEventListener('click', gameMechanic);
+                    }
+                }
+
+                updatePlayerDisplay()
+            }
+
+            /**
+             * returns void
+             */
+            function gameMechanic() {
+                var fieldId = this.getAttribute('data-field');
+                var rowId = this.parentNode.getAttribute('data-row');
+
+                if (fieldCanBeMarked(rowId, fieldId)) {
+                    markField(rowId, fieldId, getCurrentPlayerSymbol());
+                    switchPlayerSymbol();
+                    endTurn();
                 }
             }
 
@@ -74,17 +108,68 @@
              * @param symbol
              */
             function markField(rowNumber, fieldNumber, symbol) {
-                board[rowNumber][fieldNumber] = symbol;
                 var field = getField(rowNumber, fieldNumber);
                 field.innerHTML = symbol;
 
-                console.log(board);
+                board[rowNumber][fieldNumber] = symbol;
+            }
+
+            function updatePlayerDisplay() {
+                document.getElementById('current-player').innerHTML = getCurrentPlayerForDisplay();
+                document.getElementById('current-turn').innerHTML = currentTurn;
+            }
+
+            function endTurn() {
+                currentTurn++;
+
+                updatePlayerDisplay();
+            }
+
+            /**
+             * @returns {number}
+             */
+            function switchPlayerSymbol() {
+                if (currentPlayer === 0) {
+                    currentPlayer = 1;
+                } else {
+                    currentPlayer = 0;
+                }
+
+                return currentPlayer;
+            }
+
+            /**
+             * @returns {boolean}
+             */
+            function fieldCanBeMarked(rowId, fieldId) {
+                return null === board[rowId][fieldId];
+            }
+
+            /**
+             * @returns symbol
+             */
+            function getCurrentPlayerSymbol() {
+                return players[currentPlayer];
+            }
+
+            /**
+             * @returns {number}
+             */
+            function getCurrentPlayerForDisplay() {
+                return currentPlayer + 1;
             }
         });
     </script>
 </head>
 <body>
     <h1>Playing Field</h1>
+    <div class="player">
+        <ul>
+            <li>current player: <span id="current-player"></span></li>
+            <li>current turn: <span id="current-turn"></span></li>
+        </ul>
+    </div>
+
     <div class="board">
         <div data-row="0" class="row">
             <div data-field="0" class="field"></div>

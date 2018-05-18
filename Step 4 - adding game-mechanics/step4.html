@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tic - Tac - Toe</title>
+    <style>
+        /* we use local styles to make it easier to modify it */
+        * {
+            box-sizing: border-box;
+        }
+
+        .board {
+            /* if you want to know more about flex display */
+            /* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+
+            /* if you want to play around http://www.flexboxdefense.com/ */
+
+            width: 300px; /* take a number that can be divided by 3 */
+            display: flex; /* special display options */
+            flex-direction: column;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+            height: 100px;  /** to make our field we got 3 row height 100px  -> 3 x 100 = 300 */
+        }
+
+        .field {
+            width: 100px;
+            height: 100%; /* this is so our field will take the height of the row */
+            border: 1px solid #333; /* this is our border of a field so you can the field size */
+            display: flex;
+
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -khtml-user-select: none; /* Konqueror HTML */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+        }
+
+        .player-symbol {
+            width: 100%;
+            align-self: center;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { // this is that our script won't be executed before our html is ready
+            var board = [
+                [null, null, null], // row 0
+                [null, null, null], // row 1
+                [null, null, null], // row 3
+            ];
+
+            var possibleResults = [
+                [[0,0],[0,1],[0,2]], // row check
+                [[1,0],[1,1],[1,2]],
+                [[2,0],[2,1],[2,2]],
+
+                [[0,0],[1,0],[2,0]], // col check
+                [[0,1],[1,1],[2,1]],
+                [[0,2],[1,2],[2,2]],
+
+                [[0,0], [1,1], [2,2]], // diagonal check
+                [[2,0], [1,1], [0,2]],
+            ];
+
+            var currentTurn = 1;
+            var maxTurns = 10;
+            var gameOver = false;
+
+            var player1Symbol = '<span class="player-symbol">&#9732;</span>';
+            var player2Symbol = '<span class="player-symbol">&#9733;</span>';
+            var currentPlayer = 0;
+            var players = [
+                {
+                    symbol: player1Symbol,
+                    value: 1
+                },
+                {
+                    symbol: player2Symbol,
+                    value: 7
+                }
+            ];
+
+            startGame();
+
+            function startGame() {
+                var field;
+                for (var rowNumber in board) {
+                    for (var fieldNumber in board[rowNumber]) {
+                        field = getField(rowNumber, fieldNumber);
+                        field.addEventListener('click', gameMechanic);
+                    }
+                }
+
+                updatePlayerDisplay()
+            }
+
+            /**
+             * returns void
+             */
+            function gameMechanic() {
+                var fieldId = this.getAttribute('data-field');
+                var rowId = this.parentNode.getAttribute('data-row');
+
+                if (!gameOver && fieldCanBeMarked(rowId, fieldId)) {
+                    markField(rowId, fieldId, getCurrentPlayerSymbol());
+                    board[rowId][fieldId] = players[currentPlayer].value;
+                    switchPlayerSymbol();
+                    endTurn();
+                }
+            }
+
+            /**
+             * @param rowNumber
+             * @param fieldNumber
+             * @returns Element | null
+             */
+            function getField(rowNumber, fieldNumber) {
+                // we build our selector so we can say give us the the field with the fieldNumber within the row with the rowNumber
+                var fieldId = 'div[data-row="' +rowNumber+ '"] > div[data-field="' +fieldNumber+ '"]';
+                var element = document.querySelector(fieldId);
+
+                if (!element) {
+                    throw new Error('Cannot find the field ')
+                }
+
+                return element;
+            }
+
+            /**
+             * @param rowNumber
+             * @param fieldNumber
+             * @param symbol
+             */
+            function markField(rowNumber, fieldNumber, symbol) {
+                var field = getField(rowNumber, fieldNumber);
+                field.innerHTML = symbol;
+            }
+
+            function checkForWinner() {
+                if (currentTurn === maxTurns) {
+                    endGame('Tie no player has won');
+                    gameOver = true;
+                }
+
+                var player = playerHasWon(board);
+                if (player !== null) {
+                    endGame('Player ' + getCurrentPlayerForDisplay() + '  has won');
+                    gameOver = true;
+                }
+            }
+
+            /**
+             * @param {*} myBoard
+             */
+            function playerHasWon(myBoard) {
+                var sum, rowId, fieldId, resultSet, coordinate;
+
+                for (resultSet in possibleResults) {
+                    sum = 0;
+                    for (coordinate in possibleResults[resultSet]) {
+                        var coordinates = possibleResults[resultSet][coordinate];
+                        rowId = coordinates[0];
+                        fieldId = coordinates[1];
+
+                        sum += myBoard[rowId][fieldId]
+                    }
+
+                    if (sum === players[0].value * 3) {
+                        return 0;
+                    } else if (sum === players[1].value * 3) {
+                        return 1;
+                    }
+                }
+
+                return null;
+            }
+
+            /**
+             * @var {string} endText
+             */
+            function endGame(endText) {
+                document.getElementById('game-text').innerHTML = endText;
+            }
+
+            function endTurn() {
+                currentTurn++;
+
+                updatePlayerDisplay();
+                checkForWinner();
+            }
+
+            function updatePlayerDisplay() {
+                document.getElementById('current-player').innerHTML = getCurrentPlayerForDisplay();
+                document.getElementById('current-turn').innerHTML = currentTurn;
+            }
+
+            /**
+             * @returns {number}
+             */
+            function switchPlayerSymbol() {
+                if (currentPlayer === 0) {
+                    currentPlayer = 1;
+                } else {
+                    currentPlayer = 0;
+                }
+
+                return currentPlayer;
+            }
+
+            /**
+             * @returns {boolean}
+             */
+            function fieldCanBeMarked(rowId, fieldId) {
+                return null === board[rowId][fieldId];
+            }
+
+            /**
+             * @returns symbol
+             */
+            function getCurrentPlayerSymbol() {
+                return players[currentPlayer].symbol;
+            }
+
+            /**
+             * @returns {number}
+             */
+            function getCurrentPlayerForDisplay() {
+                return currentPlayer + 1;
+            }
+
+        });
+    </script>
+</head>
+<body>
+<h1>Playing Field</h1>
+<div class="player">
+    <ul>
+        <li>current player: <span id="current-player"></span></li>
+        <li>current turn: <span id="current-turn"></span></li>
+    </ul>
+</div>
+
+<h3 id="game-text"></h3>
+
+<div class="board">
+    <div data-row="0" class="row">
+        <div data-field="0" class="field"></div>
+        <div data-field="1" class="field"></div>
+        <div data-field="2" class="field"></div>
+    </div>
+    <div data-row="1" class="row">
+        <div data-field="0" class="field"></div>
+        <div data-field="1" class="field"></div>
+        <div data-field="2" class="field"></div>
+    </div>
+    <div data-row="2" class="row">
+        <div data-field="0" class="field"></div>
+        <div data-field="1" class="field"></div>
+        <div data-field="2" class="field"></div>
+    </div>
+</div>
+</body>
+</html>
